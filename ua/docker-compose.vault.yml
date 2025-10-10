@@ -1,0 +1,28 @@
+version: "3.7"
+
+services:
+  vault:
+    image: cr.yandex/crp0cslocj69o733hhmp/vault:prelife
+    container_name: vault
+    hostname: vault
+    ports:
+      - 8200:80
+    volumes:
+      - ./config.hcl:/vault/config/config.hcl
+      - vault-data:/vault/file/
+    environment:
+      VAULT_ADDR: 'http://127.0.0.1'
+    cap_add:
+      - IPC_LOCK
+    command: server
+    restart: always
+    networks:
+      - ua-dev
+
+volumes:
+  vault-data:
+
+networks:
+  ua-dev:
+    external: true
+    name: ua-dev
