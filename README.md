@@ -218,7 +218,7 @@ docker load -i ua.webui.tar
 
 ## 10. Рекомендации и проверка
 
-- **Безопасность**: Измените дефолтные пароли Keycloak после установки. Не храните `initconfig.txt` в Git.
+- **Безопасность**: Измените дефолтные пароли Keycloak после установки.
 - **Проверка**: 
   - Доступ к Keycloak: `https://auth.yourcompany.com` (логин: admin/admin).
   - Доступ к UnicArch: `https://unicarch.yourcompany.com`.
