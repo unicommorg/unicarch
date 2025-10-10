@@ -1,0 +1,64 @@
+version: "3.7"
+
+networks:
+  ua-keycloak:
+    driver: bridge
+
+services:
+  keycloak:
+    container_name: ua.keycloak
+    image: quay.io/keycloak/keycloak:${KEYCLOAK_VERSION}
+    command:
+      - start-dev
+    environment:
+      # Настройки прокси и хоста
+      KC_HOSTNAME: ${KC_HOSTNAME}
+      PROXY_ADDRESS_FORWARDING: ${PROXY_ADDRESS_FORWARDING}
+
+      # Настройки базы данных
+      KC_DB: postgres
+      KC_DB_URL_HOST: postgres_keycloak
+      KC_DB_URL_DATABASE: ${KC_DB_DATABASE}
+      KC_DB_USERNAME: ${KC_DB_USERNAME}
+      KC_DB_PASSWORD: ${KC_DB_PASSWORD}
+      KC_DB_SCHEMA: ${KC_DB_SCHEMA}
+
+      # Админ-доступ
+      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+
+      # Доп. настройки
+      KC_HTTP_ENABLED: ${KC_HTTP_ENABLED}
+      KC_HTTP_RELATIVE_PATH: ${KC_HTTP_RELATIVE_PATH}
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres_keycloak:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health/ready"]
+      interval: 10s
+      timeout: 10s
+      retries: 20
+    networks:
+      - ua-keycloak
+
+  postgres_keycloak:
+    container_name: postgres.keycloak
+    image: postgres:${POSTGRES_VERSION}
+    environment:
+      POSTGRES_DB: ${KC_DB_DATABASE}
+      POSTGRES_USER: ${KC_DB_USERNAME}
+      POSTGRES_PASSWORD: ${KC_DB_PASSWORD}
+    volumes:
+      - postgres_keycloak_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${KC_DB_USERNAME}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - ua-keycloak
+
+volumes:
+  postgres_keycloak_db_data:
