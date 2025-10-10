@@ -2134,5 +2134,51 @@
   },
   "clientPolicies": {
     "policies": []
+  },
+  "users": [
+    {
+      "id": "fdc81869-2184-49f7-be38-e65e4ee9683b",
+      "createdTimestamp": 1760099713492,
+      "username": "uaadmin",
+      "enabled": true,
+      "totp": false,
+      "emailVerified": false,
+      "firstName": "UA",
+      "lastName": "Admin",
+      "email": "uaadmin@example.com",
+      "credentials": [
+        {
+          "id": "c8d7e10b-ac01-48a7-ac76-989030fb0718",
+          "type": "password",
+          "userLabel": null,
+          "createdDate": 1760099713492,
+          "temporary": true,
+          "value": "uaadmin"
+        }
+      ],
+      "disableableCredentialTypes": [],
+      "requiredActions": [
+        "UPDATE_PASSWORD"
+      ],
+      "realmRoles": [
+        "default-roles-ua"
+      ],
+      "clientRoles": {},
+      "notBefore": 0,
+      "groups": []
+    }
+  ],
+  "roles": {
+    "realm": [
+      {
+        "id": "48b1dd6e-744e-4d39-8f60-f10a8bdd290c",
+        "name": "default-roles-ua",
+        "description": "${role_default-roles}",
+        "composite": true,
+        "clientRole": false,
+        "containerId": "614328c3-a3e2-4067-8fdd-0d43e584c2c8"
+      }
+    ],
+    "client": {}
   }
 }
