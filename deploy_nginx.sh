@@ -515,18 +515,20 @@ show_menu() {
     echo ""
     print_info "=== 🌐 Менеджер настройки nginx ==="
     echo ""
-    echo "1. 🚀 Полная настройка nginx (оба сервиса)"
-    echo "2. 🌐 Установка/проверка nginx"
-    echo "3. 🔐 Установка/проверка certbot"
-    echo "4. ⚙️ Настройка всех nginx конфигов"
-    echo "5. 🔑 Настройка Keycloak конфига"
-    echo "6. 🏢 Настройка UniArch конфига"
-    echo "7. 🔄 Обновить все конфигурации"
-    echo "8. 📜 Получение SSL сертификатов"
-    echo "9. 🔍 Проверка конфигурации"
-    echo "10. 🔄 Перезагрузить nginx"
-    echo "11. 📊 Показать статус"
+
+    echo "1. 🌐 Установка/проверка nginx"
+    echo "2. 🔐 Установка/проверка certbot"
+    echo "3. ⚙️ Настройка всех nginx конфигов"
+    echo "4. 🔑 Настройка Keycloak конфига"
+    echo "5. 🏢 Настройка UniArch конфига"
+    echo "6. 🔄 Обновить все конфигурации"
+    echo "7. 📜 Получение SSL сертификатов"
+    echo "8. 🔍 Проверка конфигурации"
+    echo "9. 🔄 Перезагрузить nginx"
+    echo "10. 📊 Показать статус"
+    echo "100. 🚀 Полная настройка nginx (конфигурационные файлы для UnicArch и KeyCloak)"
     echo "0. ❌ Выход"
+    
     echo ""
 }
 
@@ -564,17 +566,18 @@ main() {
         read -p "Выберите действие [0-11]: " choice
         
         case $choice in
-            1) full_setup ;;
-            2) setup_nginx ;;
-            3) setup_certbot ;;
-            4) setup_all_nginx_configs ;;
-            5) setup_keycloak_config ;;
-            6) setup_unicarch_config ;;
-            7) update_nginx_config ;;
-            8) setup_ssl ;;
-            9) test_nginx_config ;;
-            10) reload_nginx ;;
-            11) show_status ;;
+           
+            1) setup_nginx ;;
+            2) setup_certbot ;;
+            3) setup_all_nginx_configs ;;
+            4) setup_keycloak_config ;;
+            5) setup_unicarch_config ;;
+            6) update_nginx_config ;;
+            7) setup_ssl ;;
+            8) test_nginx_config ;;
+            9) reload_nginx ;;
+            10) show_status ;;
+            100) full_setup ;;
             0) 
                 print_info "Выход..."
                 exit 0
