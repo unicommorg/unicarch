@@ -223,7 +223,6 @@ docker load -i ua.webui.tar
   - Доступ к Keycloak: `https://auth.yourcompany.com` (логин: admin/admin).
   - Доступ к UnicArch: `https://unicarch.yourcompany.com`.
   - Логи: `docker compose logs` в директориях `ua/` и `kk/`.
-- **Обновления**: Для обновления конфигов используйте опции "7. 🔄 Обновить все конфигурации" в `deploy_nginx.sh`.
 - **Проблемы**: Если ошибки, проверьте логи Docker, сетевые настройки и порты. Обратитесь в поддержку.
 
 После всех шагов система должна быть готова к работе.
