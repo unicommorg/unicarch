@@ -19,7 +19,7 @@ REDIS_URL=ua.redis:6379
 KEYCLOAK_REALM=ua
 KEYCLOAK_CLIENT=ua-frontend-client
 KEYCLOAK_AUDIENCE=account
-KEYCLOAK_URL="https://your-keycloak-domain.com"
+KEYCLOAK_URL=https://your-keycloak-domain.com
 KEYCLOAK_SERVER_IP=your_keycloak_server_ip
 
 # ========== FRONTEND SETTINGS ==========
