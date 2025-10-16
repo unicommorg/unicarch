@@ -195,9 +195,12 @@ chmod +x deploy_nginx.sh
 
 Перенесите `deploy_kk.sh`, директорию `kk/` и `initconfig.txt` на сервер, где планируете развернуть Keycloak.
 
-Перейдите на сервер:
+Перейдите на сервер с правами sudo:
 ```bash
 sudo su
+```
+
+```bash
 chmod +x deploy_kk.sh
 ./deploy_kk.sh
 ```
@@ -217,6 +220,9 @@ chmod +x deploy_kk.sh
 Сделайте исполняемым скрипт от пользователя с правами sudo.
 ```bash
 sudo su
+```
+
+```bash
 chmod +x deploy_ua.sh
 ```
 
