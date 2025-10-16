@@ -66,14 +66,6 @@ ping unicarch.yourcompany.com
 ping auth.yourcompany.com
 ```
 
-## 3. Доступ к репозиторию
-
-Для скачивания образов Unicomm выполните:
-```bash
-docker login --username oauth \
-  --password y0_AgAAAAB3muX6AATuwQAAAAEawLLRAAB9TQHeGyxGPZXkjVDHF1ZNJcV8UQ \
-  cr.yandex
-```
 
 ## 4. Клонирование репозитория
 
@@ -82,31 +74,33 @@ docker login --username oauth \
 git clone -b   skonstantinov  https://github.com/unicommorg/unicarch.git
 ```
 После клонирования в репозитории будут скрипты (`deploy_ua.sh`, `deploy_nginx.sh`, `deploy_kk.sh`) и директории (`ua/`, `nginx/`, `kk/`).
+Заполните initconfig.txt.
 
 ## 5. Краткое описание переменных в файле initconfig.txt
 
 Этот файл содержит настройки для развертывания UnicArch, Nginx и Keycloak. Заполните его перед запуском скриптов. 
-Пароли должны быть без спецсимволов
+Пароли должны быть без спецсимволов.
+
 
 ### 1. База данных MongoDB
 | Переменная                  | Назначение                       | Изменить / По умолчанию |
 |-----------------------------|----------------------------------|-------------------------|
 | `MONGO_INITDB_ROOT_USERNAME` | Имя администратора MongoDB     | **Изменить** (например: `admin`) |
-| `MONGO_INITDB_ROOT_PASSWORD` | Пароль администратора           | **Изменить** (сгенерируйте сильный пароль) |
-| `MONGO_INITDB_DATABASE`     | Имя базы данных для логов       | **По умолчанию**: `ualogs` (можно оставить) |
+| `MONGO_INITDB_ROOT_PASSWORD` | Пароль администратора           | **Изменить** (сгенерируйте сильный пароль без спецсимволов) |
+| `MONGO_INITDB_DATABASE`     | Имя базы данных для логов       | **По умолчанию**: `ualogs`  |
 
 ### 2. База данных PostgreSQL
 | Переменная                 | Назначение                     | Изменить / По умолчанию |
 |----------------------------|--------------------------------|-------------------------|
 | `POSTGRES_DB`              | Имя базы данных приложения     | **Изменить** (например: `ua_db`) |
 | `POSTGRES_DB_USER`         | Пользователь PostgreSQL        | **Изменить** (например: `postgres`) |
-| `POSTGRES_DB_PASSWORD`     | Пароль пользователя            | **Изменить** (сгенерируйте сильный пароль) |
+| `POSTGRES_DB_PASSWORD`     | Пароль пользователя            | **Изменить** (сгенерируйте сильный пароль без спецсимволов) |
 
 ### 3. Настройки MinIO (объектное хранилище)
 | Переменная                | Назначение                     | Изменить / По умолчанию |
 |---------------------------|--------------------------------|-------------------------|
 | `MINIO_ROOT_USER`         | Имя пользователя MinIO         | **Изменить** (например: `minioadmin`) |
-| `MINIO_ROOT_PASSWORD`     | Пароль для MinIO               | **Изменить** (сгенерируйте сильный пароль) |
+| `MINIO_ROOT_PASSWORD`     | Пароль для MinIO               | **Изменить** (сгенерируйте сильный пароль без спецсимволов) |
 | `MINIO_ENDPOINT`          | Внутренний endpoint MinIO      | **По умолчанию**: `ua.minio:9000` (оставить для Docker-сети) |
 
 ### 4. Настройки Redis (кэш)
@@ -117,8 +111,8 @@ git clone -b   skonstantinov  https://github.com/unicommorg/unicarch.git
 ### 5. Настройки Keycloak (аутентификация)
 | Переменная                | Назначение                     | Изменить / По умолчанию |
 |---------------------------|--------------------------------|-------------------------|
-| `KEYCLOAK_REALM`          | Имя realm в Keycloak           | **По умолчанию**: `ua` (можно оставить) |
-| `KEYCLOAK_CLIENT`         | Имя клиента в Keycloak         | **По умолчанию**: `ua-frontend-client` (можно оставить) |
+| `KEYCLOAK_REALM`          | Имя realm в Keycloak           | **По умолчанию**: `ua`(оставить)|
+| `KEYCLOAK_CLIENT`         | Имя клиента в Keycloak         | **По умолчанию**: `ua-frontend-client` (оставить)|
 | `KEYCLOAK_AUDIENCE`       | Аудитория для токенов          | **По умолчанию**: `account` (оставить) |
 | `KEYCLOAK_URL`            | Внешний URL Keycloak           | **Изменить** (например: `https://auth.yourcompany.com`) |
 | `KEYCLOAK_SERVER_IP`      | IP-адрес сервера Keycloak      | **Изменить** (реальный IP сервера) |
@@ -126,25 +120,26 @@ git clone -b   skonstantinov  https://github.com/unicommorg/unicarch.git
 ### 6. Frontend настройки (Vite)
 | Переменная                | Назначение                     | Изменить / По умолчанию |
 |---------------------------|--------------------------------|-------------------------|
-| `VITE_ALLOWED_HOSTS`      | Разрешенные домены для фронтенда | **Изменить** (например: `unicarch.yourcompany.com`) |
+| `VITE_ALLOWED_HOSTS`      | Разрешенные домены для фронтенда | **Оставить** |
 | `VITE_KEYCLOAK_URL`       | URL Keycloak для фронтенда     | **Изменить** (должен совпадать с `KEYCLOAK_URL`) |
 | `VITE_KEYCLOAK_REALM`     | Realm для фронтенда            | **По умолчанию**: `ua` (совпадает с `KEYCLOAK_REALM`) |
 | `VITE_KEYCLOAK_CLIENT`    | Клиент для фронтенда           | **По умолчанию**: `ua-frontend-client` (совпадает с `KEYCLOAK_CLIENT`) |
 | `VITE_HOST_URL`           | Внешний URL API                | **Изменить** (например: `https://api.yourcompany.com/api`) |
 | `UNICARCH_SERVER_IP`      | IP-адрес сервера UnicArch      | **Изменить** (реальный IP сервера) |
 
-### 7. Настройки Vault (секреты и SSL)
+### 7. Настройки Vault
 | Переменная                | Назначение                     | Изменить / По умолчанию |
 |---------------------------|--------------------------------|-------------------------|
 | `VAULT_ADDR`              | Адрес Vault                    | **По умолчанию**: `http://vault` (оставить для Docker) |
 | `VAULT_TOKEN`             | Токен Vault (генерируется скриптом)| Автоматически (не трогать) |
+### 8. Настройки Certbot
 | `SSL_EMAIL`               | Email для SSL-сертификатов     | **Изменить** (например: `admin@yourcompany.com`) |
 
 ### Рекомендации
 - **Изменяйте**: Все пароли, URL, IP и домены под вашу среду.
 - **Оставляйте по умолчанию**: Внутренние endpoints (Redis, MinIO, Vault) и стандартные имена (realm, client).
 - **Проверка**: Убедитесь в согласованности (например, Keycloak URL везде одинаковый). Тестируйте доступность после заполнения.
-- Генерируйте логины и пароли без спецсимволов (избегайте символов вроде `:`, `/`, `\` для избежания проблем с URL-encoding).
+- Генерируйте логины и пароли без спецсимволов (избегайте символов вроде `:`, `/`, `\`,`'`,`@` для избежания проблем с URL-encoding).
 
 ## 6. Настройка проксирующего сервера (nginx)
 
@@ -191,7 +186,7 @@ sudo su
 chmod +x deploy_ua.sh
 ```
 
-Загрузите образ ua.webui (если не установлен docker,  установите docker через скрипт ./deploy_ua.sh )
+Загрузите образ ua.webui (если не установлен docker,  установите docker через скрипт ./deploy_ua.sh пункт 1 )
 
 ```bash
 docker load -i ua.webui.tar
@@ -210,7 +205,7 @@ docker load -i ua.webui.tar
 
 ## 9. Первый вход в UnicArch
 
-Пеейдите в веб-интерфейс UnicArch 
+Перейдите в веб-интерфейс UnicArch 
 Доступ к UnicArch: `https://unicarch.yourcompany.com`.
 Логин uaadmin 
 Пароль uaadmin
