@@ -161,6 +161,8 @@ git clone -b   skonstantinov  https://github.com/unicommorg/unicarch.git
 | `VAULT_TOKEN`             | Токен Vault (генерируется скриптом)| Автоматически (не трогать) |
 <!-- TOC --><a name="8-certbot"></a>
 ### 8. Настройки Certbot
+| Переменная                | Назначение                     | Изменить / По умолчанию |
+|---------------------------|--------------------------------|-------------------------|
 | `SSL_EMAIL`               | Email для SSL-сертификатов     | **Изменить** (например: `admin@yourcompany.com`) |
 
 <!-- TOC --><a name=""></a>
