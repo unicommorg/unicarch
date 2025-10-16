@@ -1,0 +1,114 @@
+version: "3.7"
+
+services:
+  ua.webui:
+    image: ua-front-test:latest
+    container_name: ua.webui
+    ports:
+      - "8000:8000"
+    networks:
+      - ua-dev
+    restart:
+      unless-stopped
+    environment:
+      VITE_ALLOWED_HOSTS: ${VITE_ALLOWED_HOSTS}
+
+  ua.backend:
+    image: cr.yandex/crp0cslocj69o733hhmp/ua_server:dev-0.2.0.823-kc26
+    container_name: ua.backend
+    environment:
+      VAULT_ADDR: ${VAULT_ADDR}
+      VAULT_TOKEN: ${VAULT_TOKEN}
+      Logging__LogLevel__Default: Debug
+    networks:
+      - ua-dev
+    ports:
+      - "8080:8080"
+    restart:
+      unless-stopped
+
+  ua.minio:
+    image: quay.io/minio/minio:RELEASE.2024-12-18T13-15-44Z
+    container_name: ua.minio
+    command: server /data
+    expose:
+      - "9000"
+      - "9002"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - minio-data:/data
+    networks:
+      - ua-dev
+
+  ua.mongodb:
+    image: mongo:4.4.24
+    container_name: ua.mongodb
+    restart: always
+    ports:
+      - '27017:27017'
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+    command: ["--bind_ip_all"]
+    volumes:
+      - mongodb-data:/data/db
+      - mongodb-data:/data/configdb
+    healthcheck:
+      test: ["CMD", "mongo", "--quiet", "--eval", "db.adminCommand('ping')", "-u", "${MONGO_INITDB_ROOT_USERNAME}", "-p", "${MONGO_INITDB_ROOT_PASSWORD}", "--authenticationDatabase", "admin"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - ua-dev
+
+  ua.redis:
+    image: redis:6.2
+    container_name: ua.redis
+    restart: always
+    ports:
+      - '6379:6379'
+    command: redis-server --loglevel warning
+    volumes:
+      - redis-data:/data
+    networks:
+      - ua-dev
+
+  ua.postgres:
+    image: postgres:15
+    container_name: ua.postgres
+    command: postgres -c 'max_connections=300'
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_PASSWORD: ${POSTGRES_DB_PASSWORD}
+      POSTGRES_USER: ${POSTGRES_DB_USER}
+    healthcheck:
+      interval: 10s
+      retries: 12
+      start_period: 20s
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_DB_USER} -d ${POSTGRES_DB}"]
+      timeout: 10s
+    restart: unless-stopped
+    volumes:
+      - postgresdb-volume:/var/lib/postgresql/data
+    networks:
+      - ua-dev
+
+volumes:
+  minio-data:
+  redis-data:
+  postgresdb-volume:
+  mongodb-data:
+
+networks:
+  ua-dev:
+    external: true
+    name: ua-dev
