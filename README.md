@@ -59,7 +59,7 @@
 <!-- TOC --><a name="-etchosts"></a>
 ### Добавление записей в /etc/hosts
 
-Для корректной работы системы по HTTPS добавьте IP-адрес Nginx-сервера и DNS-имена сервисов в файл `/etc/hosts` **на  серверах UnicArch и Keycloak **:
+Для корректной работы системы по HTTPS добавьте IP-адрес Nginx-сервера и DNS-имена сервисов в файл `/etc/hosts` **на серверах UnicArch и Keycloak**:
 
 ```bash
 sudo nano /etc/hosts
