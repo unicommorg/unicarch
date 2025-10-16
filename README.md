@@ -90,7 +90,7 @@ ping auth.yourcompany.com
 
 Клонируйте репозиторий
 ``` bash
-git clone -b   skonstantinov  https://github.com/unicommorg/unicarch.git
+git clone -b   main  https://github.com/unicommorg/unicarch.git
 ```
 После клонирования в репозитории будут скрипты (`deploy_ua.sh`, `deploy_nginx.sh`, `deploy_kk.sh`) и директории (`ua/`, `nginx/`, `kk/`).
 Заполните initconfig.txt.
@@ -178,6 +178,10 @@ git clone -b   skonstantinov  https://github.com/unicommorg/unicarch.git
 Перенесите `deploy_nginx.sh`, директорию `nginx/` и `initconfig.txt` на сервер, где планируете развернуть Nginx.
 
 Перейдите на сервер:
+
+```bash
+sudo su
+```
 ```bash
 sudo su
 chmod +x deploy_nginx.sh
