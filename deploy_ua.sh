@@ -29,31 +29,36 @@ check_docker_status() {
         print_warning "Docker не установлен"
     fi
 
-    # Проверяем наличие Docker Compose
-    if command -v docker-compose &> /dev/null; then
-        print_success "Docker Compose установлен:"
-        docker-compose --version
-    else
-        print_warning "Docker Compose не установлен"
-    fi
-
     # Проверяем наличие Docker Compose Plugin
     if command -v docker &> /dev/null && docker compose version &> /dev/null; then
         print_success "Docker Compose Plugin установлен:"
         docker compose version
+    else
+        print_warning "Docker Compose Plugin не установлен"
+    fi
+
+    # Удаляем старую версию docker-compose если она есть и вызывает ошибки
+    if command -v docker-compose &> /dev/null; then
+        print_warning "Обнаружена старая версия docker-compose (v1)"
+        print_info "Рекомендуется использовать только Docker Compose Plugin (v2)"
+        
+        # Проверяем, работает ли старая версия
+        if ! docker-compose version &>/dev/null; then
+            print_warning "Старая версия docker-compose не работает, удаляем..."
+            sudo apt remove -y docker-compose python3-compose 2>/dev/null || true
+        fi
     fi
 }
-
 # Функция проверки доступности Docker
 ensure_docker() {
-    if ! command -v docker &> /dev/null || ! command -v docker-compose &> /dev/null; then
+    if ! command -v docker &> /dev/null || ! docker compose version &> /dev/null; then
         print_error "Docker не установлен или недоступен"
         echo "Пожалуйста, установите Docker используя пункт 1 в меню"
         return 1
     fi
     return 0
 }
-
+# Функция установки Docker
 # Функция установки Docker
 install_docker() {
     print_info "=== 🐳 Установка Docker ==="
@@ -64,7 +69,7 @@ install_docker() {
     echo "  • Удалены конфликтующие пакеты"
     echo "  • Установлены зависимости"
     echo "  • Добавлен официальный репозиторий Docker"
-    echo "  • Установлены docker-ce, docker-compose-plugin, docker-compose"
+    echo "  • Установлены docker-ce, docker-compose-plugin"
     echo "  • Пользователь добавлен в группу docker"
     echo ""
     
@@ -76,12 +81,12 @@ install_docker() {
     fi
 
     print_info "1. Удаление конфликтующих пакетов..."
-    sudo apt remove -y containerd || true
+    sudo apt remove -y docker-compose python3-compose containerd 2>/dev/null || true
     sudo apt autoremove -y
 
     print_info "2. Обновление пакетов и установка зависимостей..."
     sudo apt update -y
-    sudo apt install -y ca-certificates curl gnupg lsb-release software-properties-common
+    sudo apt install -y ca-certificates curl gnupg lsb-release
 
     print_info "3. Добавление GPG ключа Docker..."
     sudo mkdir -p /etc/apt/keyrings
@@ -99,15 +104,27 @@ install_docker() {
     sudo apt update -y
 
     print_info "5. Установка Docker с разрешением зависимостей..."
-    sudo apt install -y -f docker-ce docker-ce-cli containerd.io docker-compose-plugin docker-compose
+    sudo apt install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
 
     print_info "6. Настройка прав пользователя..."
     sudo usermod -aG docker $USER
 
+    # Запускаем и включаем Docker сервис
+    sudo systemctl enable docker
+    sudo systemctl start docker
+
     print_success "Docker и связанные компоненты установлены:"
     echo "   - docker-ce, docker-ce-cli, containerd.io"
-    echo "   - docker-compose-plugin, docker-compose"
-    echo "   - ca-certificates, curl, gnupg, lsb-release, software-properties-common"
+    echo "   - docker-compose-plugin"
+    
+    # Проверяем установку
+    if command -v docker &> /dev/null; then
+        print_success "Docker установлен: $(docker --version)"
+    fi
+
+    if docker compose version &> /dev/null; then
+        print_success "Docker Compose Plugin установлен: $(docker compose version)"
+    fi
 
     print_warning "Для применения изменений прав необходимо перезапустить терминал или выйти/войти в систему."
     
@@ -122,7 +139,6 @@ install_docker() {
         return 0
     fi
 }
-
 # Функция входа в Yandex Container Registry
 docker_login() {
     if ! ensure_docker; then
