@@ -90,7 +90,7 @@ ping auth.yourcompany.com
 
 Клонируйте репозиторий
 ``` bash
-git clone -b   main  https://github.com/unicommorg/unicarch.git
+git clone -b   skonstantinov  https://github.com/unicommorg/unicarch.git
 ```
 После клонирования в репозитории будут скрипты (`deploy_ua.sh`, `deploy_nginx.sh`, `deploy_kk.sh`) и директории (`ua/`, `nginx/`, `kk/`).
 Заполните initconfig.txt.
